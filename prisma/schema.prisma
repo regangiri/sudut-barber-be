@@ -1,0 +1,102 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  name      String?
+  phone     String    @unique
+  booking   Booking[]
+  review    Review[]
+  createdAt DateTime  @default(now())
+}
+
+model Barber {
+  id        String          @id @default(uuid())
+  name      String
+  bio       String?
+  services  BarberService[]
+  reviews   Review[]
+  bookings  Booking[]
+  timeSlots TimeSlot[]
+  createdAt DateTime        @default(now())
+}
+
+model Service {
+  id          String          @id @default(uuid())
+  name        String
+  description String?
+  duration    Int // duration in minutes
+  price       Float
+  barber      BarberService[]
+  bookings    Booking[]
+}
+
+model BarberService {
+  barberId  String
+  serviceId String
+
+  barber  Barber  @relation(fields: [barberId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
+
+  @@id([barberId, serviceId]) // Composite primary key
+}
+
+model Booking {
+  id         String @id @default(uuid())
+  userId     String
+  barberId   String
+  serviceId  String
+  timeSlotId String @unique
+
+  status BookingStatus @default(PENDING)
+
+  user     User     @relation(fields: [userId], references: [id])
+  barber   Barber   @relation(fields: [barberId], references: [id])
+  service  Service  @relation(fields: [serviceId], references: [id])
+  timeSlot TimeSlot @relation(fields: [timeSlotId], references: [id])
+
+  review Review?
+
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id        String  @id @default(uuid())
+  rating    Int
+  comment   String?
+  userId    String
+  barberId  String
+  bookingId String  @unique
+
+  user    User    @relation(fields: [userId], references: [id])
+  barber  Barber  @relation(fields: [barberId], references: [id])
+  booking Booking @relation(fields: [bookingId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model TimeSlot {
+  id        String   @id @default(uuid())
+  barberId  String
+  date      DateTime
+  startTime DateTime
+  duration  Int
+  isBooked  Boolean  @default(false)
+
+  barber   Barber   @relation(fields: [barberId], references: [id])
+  booking  Booking?
+}
