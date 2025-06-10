@@ -8,10 +8,24 @@ import { UserModule } from './user/user.module';
 import { BarberModule } from './barber/barber.module';
 import { BarberController } from './barber/barber.controller';
 import { BarberService } from './barber/barber.service';
+import { BookingModule } from './booking/booking.module';
+import { BookingController } from './booking/booking.controller';
+import { BookingService } from './booking/booking.service';
 
 @Module({
-  imports: [UserModule, BarberModule],
-  controllers: [AppController, UserController, BarberController],
-  providers: [AppService, PrismaService, UserService, BarberService],
+  imports: [UserModule, BarberModule, BookingModule],
+  controllers: [
+    AppController,
+    UserController,
+    BarberController,
+    BookingController,
+  ],
+  providers: [
+    AppService,
+    PrismaService,
+    UserService,
+    BarberService,
+    BookingService,
+  ],
 })
 export class AppModule {}
