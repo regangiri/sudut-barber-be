@@ -1,5 +1,7 @@
-import { Controller, Get, Query } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { BookingService } from './booking.service';
+import { CreateBookingDto } from './dto/booking.dto';
+import { Booking } from '@prisma/client';
 
 @Controller('booking')
 export class BookingController {
@@ -7,10 +9,17 @@ export class BookingController {
 
   @Get()
   async bookings(@Query() query: any) {
-    const { skip = 0, take = 10, name = '', orderBy = 'createdAt' } = query;
+    const {
+      skip = 0,
+      take = 10,
+      id = '',
+      orderBy = 'createdAt',
+      status = '',
+    } = query;
 
     const where = {
-      ...(name && { name: { contains: name } }),
+      ...(id && { id: { equals: id } }),
+      ...(status && { status: { equals: status } }),
     };
 
     return this.bookingService.bookings({
@@ -19,5 +28,10 @@ export class BookingController {
       where,
       orderBy: orderBy ? { [orderBy]: 'asc' } : undefined,
     });
+  }
+
+  @Post('/create-booking')
+  async createBooking(@Body() dto: CreateBookingDto): Promise<Booking> {
+    return this.bookingService.createBooking(dto);
   }
 }
