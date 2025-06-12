@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Booking, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateBookingDto } from './dto/booking.dto';
@@ -61,6 +65,27 @@ export class BookingService {
         },
       });
     } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateBooking(params: {
+    id: string;
+    data: Partial<CreateBookingDto>;
+  }): Promise<Booking> {
+    try {
+      const { id, data } = params;
+      return await this.prisma.booking.update({
+        where: { id: id },
+        data: data,
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException('Booking not found');
+      }
       throw error;
     }
   }
