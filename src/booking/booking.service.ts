@@ -89,4 +89,19 @@ export class BookingService {
       throw error;
     }
   }
+
+  async deleteBooking(id: string) {
+    try {
+      return await this.prisma.booking.delete({
+        where: { id },
+      });
+    } catch (error: unknown) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException('Booking not found');
+      }
+    }
+  }
 }

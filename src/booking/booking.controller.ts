@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -49,5 +50,10 @@ export class BookingController {
     @Body() data: Partial<CreateBookingDto>,
   ): Promise<Booking> {
     return this.bookingService.updateBooking({ id: id, data });
+  }
+
+  @Delete('/delete-booking/:id')
+  async deleteBooking(@Param('id') id: string) {
+    return this.bookingService.deleteBooking(id);
   }
 }
