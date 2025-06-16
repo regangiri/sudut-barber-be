@@ -7,29 +7,39 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User as UserModel } from '@prisma/client';
-import { CreateUserDto, UpdateUserDto, UserQueryDto } from './dto/user.dto';
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  UserEntity,
+  UserQueryDto,
+} from './dto/user.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { plainToInstance } from 'class-transformer';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  async users(@Query() query: UserQueryDto): Promise<UserModel[]> {
+  async users(@Query() query: UserQueryDto): Promise<UserEntity[]> {
     const { skip = 0, take = 10, name = '', orderBy = 'createdAt' } = query;
 
     const where = {
       ...(name && { name: { contains: name } }),
     };
 
-    return this.userService.users({
+    const users = await this.userService.users({
       skip: skip ? Number(skip) : undefined,
       take: take ? Number(take) : undefined,
       where,
       orderBy: orderBy ? { [orderBy]: 'asc' } : undefined,
     });
+    return plainToInstance(UserEntity, users);
   }
 
   @Post('create-user')
