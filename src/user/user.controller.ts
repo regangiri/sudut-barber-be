@@ -7,6 +7,8 @@ import {
   Patch,
   Post,
   Query,
+  Req,
+  Request,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
@@ -16,6 +18,8 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { plainToInstance } from 'class-transformer';
 import { UserEntity } from './entities/user.entity';
 import { UserQueryDto } from './dto/user-query.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('user')
 export class UserController {
@@ -54,5 +58,11 @@ export class UserController {
   @Delete('delete-user/:id')
   async deleteUser(@Param('id') id: string): Promise<UserModel> {
     return this.userService.deleteUser({ id: id });
+  }
+
+  @Patch('change-password')
+  @UseGuards(AuthGuard('jwt'))
+  async changePassword(@Req() req, @Body() dto: ChangePasswordDto) {
+    return this.userService.changePassword(req.user.userId, dto);
   }
 }
