@@ -16,6 +16,7 @@ export class BarberService {
             service: true,
           },
         },
+        bookings: true,
       },
     });
   }

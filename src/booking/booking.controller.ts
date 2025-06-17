@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -11,10 +12,14 @@ import {
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { Booking } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Controller('booking')
 export class BookingController {
-  constructor(private readonly bookingService: BookingService) {}
+  constructor(
+    private readonly bookingService: BookingService,
+    private prisma: PrismaService,
+  ) {}
 
   @Get()
   async bookings(@Query() query: any) {
@@ -41,6 +46,19 @@ export class BookingController {
 
   @Post('/create-booking')
   async createBooking(@Body() dto: CreateBookingDto): Promise<Booking> {
+    const barber = await this.prisma.barber.findUnique({
+      where: { id: dto.barberId },
+      include: { services: true },
+    });
+    const serviceOffered = barber?.services.some(
+      (service) => service.serviceId === dto.serviceId,
+    );
+
+    if (!serviceOffered) {
+      throw new BadRequestException(
+        'Selected barber does not offer this service',
+      );
+    }
     return this.bookingService.createBooking(dto);
   }
 
