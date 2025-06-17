@@ -6,6 +6,7 @@ import {
 import { Booking, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
+import { BookingEntity } from './entities/booking.entity';
 
 @Injectable()
 export class BookingService {
@@ -34,7 +35,7 @@ export class BookingService {
     });
   }
 
-  async createBooking(dto: CreateBookingDto): Promise<Booking> {
+  async createBooking(dto: CreateBookingDto): Promise<BookingEntity> {
     try {
       const { startTime, ...rest } = dto;
 
@@ -62,6 +63,23 @@ export class BookingService {
         data: {
           ...rest,
           startTime: date,
+        },
+        include: {
+          barber: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              phone: true,
+            },
+          },
+          service: true,
         },
       });
     } catch (error) {

@@ -13,6 +13,8 @@ import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { Booking } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { plainToInstance } from 'class-transformer';
+import { BookingEntity } from './entities/booking.entity';
 
 @Controller('booking')
 export class BookingController {
@@ -59,7 +61,8 @@ export class BookingController {
         'Selected barber does not offer this service',
       );
     }
-    return this.bookingService.createBooking(dto);
+    const booking = this.bookingService.createBooking(dto);
+    return plainToInstance(BookingEntity, booking);
   }
 
   @Patch('/update-booking/:id')
