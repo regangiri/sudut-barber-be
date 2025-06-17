@@ -3,8 +3,8 @@ import { Exclude } from 'class-transformer';
 export class UserEntity {
   id: string;
   email: string;
-  phone: string;
-  name?: string;
+  phone: string | null;
+  name: string | null;
   createdAt: Date;
 
   @Exclude()
