@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User as UserModel } from '@prisma/client';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { plainToInstance } from 'class-transformer';
@@ -40,20 +39,16 @@ export class UserController {
     return plainToInstance(UserEntity, users);
   }
 
-  @Post('create-user')
-  async signupUser(@Body() createUserDto: CreateUserDto): Promise<UserModel> {
-    return this.userService.createUser(createUserDto);
-  }
-
   @Patch('update-user/:id')
   async updateUser(
     @Body() updateUserDto: UpdateUserDto,
     @Param('id') id: string,
-  ): Promise<UserModel> {
-    return this.userService.updateUser({
+  ): Promise<UserEntity> {
+    const user = await this.userService.updateUser({
       id: id,
       data: updateUserDto,
     });
+    return plainToInstance(UserEntity, user);
   }
 
   @Delete('delete-user/:id')

@@ -22,59 +22,6 @@ export class UserService {
     });
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
-    try {
-      const { email, phone, password, ...rest } = createUserDto;
-
-      if (email && !password) {
-        throw new BadRequestException('Password is required');
-      }
-
-      let hashedPassword: string | undefined = undefined;
-
-      hashedPassword = await bcrypt.hash(password, 10);
-
-      if (email) {
-        const existingEmail = await this.prisma.user.findUnique({
-          where: { email },
-        });
-        if (existingEmail) {
-          throw new BadRequestException('Email already exists');
-        }
-      }
-
-      if (phone) {
-        const existingPhone = await this.prisma.user.findUnique({
-          where: { phone },
-        });
-        if (existingPhone) {
-          throw new BadRequestException('Phone number already exists');
-        }
-      }
-
-      return this.prisma.user.create({
-        data: {
-          email,
-          phone,
-          password: hashedPassword,
-          ...rest,
-        },
-      });
-    } catch (err) {
-      if (err instanceof HttpException) {
-        throw err;
-      }
-
-      throw new HttpException(
-        {
-          status: HttpStatus.INTERNAL_SERVER_ERROR,
-          error: 'An unexpected error occurred',
-        },
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
   async updateUser(params: { id: string; data: UpdateUserDto }): Promise<User> {
     try {
       const { id, data } = params;
