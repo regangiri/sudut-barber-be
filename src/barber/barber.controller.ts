@@ -9,8 +9,9 @@ import {
   Query,
 } from '@nestjs/common';
 import { BarberService } from './barber.service';
-import { BarberQueryDto, CreateBarberDto } from './dto/barber.dto';
+import { CreateBarberDto } from './dto/barber.dto';
 import { Barber } from '@prisma/client';
+import { BarberQueryDto } from './dto/barber-query.dto';
 
 @Controller('barber')
 export class BarberController {

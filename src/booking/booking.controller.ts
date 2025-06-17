@@ -9,7 +9,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { BookingService } from './booking.service';
-import { CreateBookingDto } from './dto/booking.dto';
+import { CreateBookingDto } from './dto/create-booking.dto';
 import { Booking } from '@prisma/client';
 
 @Controller('booking')

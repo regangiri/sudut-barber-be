@@ -11,14 +11,12 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User as UserModel } from '@prisma/client';
-import {
-  CreateUserDto,
-  UpdateUserDto,
-  UserEntity,
-  UserQueryDto,
-} from './dto/user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { plainToInstance } from 'class-transformer';
+import { UserEntity } from './entities/user.entity';
+import { UserQueryDto } from './dto/user-query.dto';
 
 @Controller('user')
 export class UserController {

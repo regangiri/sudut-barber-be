@@ -1,9 +1,4 @@
-import {
-  IsNotEmpty,
-  IsNumberString,
-  IsOptional,
-  Length,
-} from 'class-validator';
+import { IsNotEmpty, IsOptional, Length } from 'class-validator';
 
 export class CreateBarberDto {
   @IsNotEmpty({ message: 'Name is required' })
@@ -13,23 +8,4 @@ export class CreateBarberDto {
   bio: string;
   @IsOptional()
   serviceIds: string[];
-}
-
-export class BarberQueryDto {
-  @IsOptional()
-  @IsNumberString()
-  skip?: string;
-
-  @IsOptional()
-  @IsNumberString()
-  take?: string;
-
-  @IsOptional()
-  name?: string;
-
-  @IsOptional()
-  title?: string;
-
-  @IsOptional()
-  orderBy?: string;
 }
