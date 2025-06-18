@@ -1,7 +1,7 @@
 import { BookingStatus } from '@prisma/client';
 import { Exclude, Type } from 'class-transformer';
 import { BarberEntity } from 'src/barber/entities/barber.entity';
-import { ServiceEntity } from 'src/service/entities/service.entity';
+import { ServiceEntity } from 'src/services/entities/service.entity';
 import { UserEntity } from 'src/user/entities/user.entity';
 
 export class BookingEntity {
