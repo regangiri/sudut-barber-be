@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { Prisma, Service } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { ServiceEntity } from './entities/service.entity';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { AssignServiceDto } from './dto/assign-service.dto';
 
@@ -19,22 +18,22 @@ export class ServicesService {
   }
 
   async createService(dto: CreateServiceDto) {
-    // try {
-    return this.prisma.service.create({
-      data: {
-        name: dto.name,
-        price: dto.price,
-        duration: dto.duration,
-        description: dto.description,
-      },
-    });
-    // } catch (error: unknown) {
-    //   if (error instanceof Error) {
-    //     console.log(error);
-    //     throw new Error(error.message);
-    //   }
-    //   throw error;
-    // }
+    try {
+      return this.prisma.service.create({
+        data: {
+          name: dto.name,
+          price: dto.price,
+          duration: dto.duration,
+          description: dto.description,
+        },
+      });
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.log(error);
+        throw new Error(error.message);
+      }
+      throw error;
+    }
   }
 
   async updateService(params: {

@@ -37,32 +37,60 @@ export class BookingService {
 
   async createBooking(dto: CreateBookingDto): Promise<BookingEntity> {
     try {
-      const { startTime, ...rest } = dto;
+      const { startTime, serviceId, barberId, ...rest } = dto;
 
-      const date = new Date(startTime);
-      if (isNaN(date.getTime())) {
+      const start = new Date(startTime);
+      if (isNaN(start.getTime())) {
         throw new BadRequestException('Invalid startTime date format');
       }
 
-      const overlappedBookings = await this.prisma.booking.findMany({
+      // 1. Fetch service to get duration
+      const service = await this.prisma.service.findUnique({
+        where: { id: serviceId },
+      });
+
+      if (!service) {
+        throw new BadRequestException('Service not found');
+      }
+
+      const durationMs = service.duration * 60 * 1000;
+      const end = new Date(start.getTime() + durationMs);
+
+      // 2. Fetch ALL bookings for the same barber that could overlap
+      const existingBookings = await this.prisma.booking.findMany({
         where: {
+          barberId,
           startTime: {
-            gte: new Date(date.getTime() - 60 * 60 * 1000),
-            lte: new Date(date.getTime() + 60 * 60 * 1000),
+            lt: end, // Existing booking starts before new booking ends
           },
+        },
+        include: {
+          service: true,
         },
       });
 
-      if (overlappedBookings.length > 0) {
-        throw new BadRequestException(
-          'The booking time overlaps with an existing booking',
+      // 3. Filter for true overlaps
+      for (const booking of existingBookings) {
+        const bookingStart = booking.startTime;
+        const bookingEnd = new Date(
+          bookingStart.getTime() + booking.service.duration * 60000,
         );
+
+        const overlaps = bookingEnd > start;
+        if (overlaps) {
+          throw new BadRequestException(
+            `This time slot overlaps with another booking (${bookingStart.toISOString()} - ${bookingEnd.toISOString()})`,
+          );
+        }
       }
 
+      // 4. Create booking
       return this.prisma.booking.create({
         data: {
           ...rest,
-          startTime: date,
+          startTime: start,
+          serviceId,
+          barberId,
         },
         include: {
           barber: {
