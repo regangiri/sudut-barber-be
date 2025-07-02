@@ -27,7 +27,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: your-dockerhub-username/your-app:latest
+          tags: regankaruna/sudutbarber:latest
 
       - name: Deploy to your server
         uses: appleboy/ssh-action@v0.1.6
@@ -36,6 +36,6 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            cd /path/to/your/project
+            cd ~/sudut-barber-be
             docker-compose pull
             docker-compose up -d --build
