@@ -27,7 +27,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: regankaruna/sudutbarber:latest
+          tags: regangiri/sudutbarber:latest
 
       - name: Deploy to your server
         uses: appleboy/ssh-action@v0.1.6
