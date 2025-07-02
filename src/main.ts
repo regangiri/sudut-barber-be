@@ -16,6 +16,7 @@ async function bootstrap() {
   app.enableCors({
     origin: 'localhost:3000', // atau frontend URL-mu
   });
+  //test workflow
   await app.listen(process.env.PORT ?? 3000);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
