@@ -17,7 +17,7 @@ import { BarberQueryDto } from './dto/barber-query.dto';
 export class BarberController {
   constructor(private readonly barberService: BarberService) {}
 
-  @Get()
+  @Get('get-all')
   async barbers(@Query() query: BarberQueryDto): Promise<Barber[]> {
     const { skip = 0, take = 10, name = '', orderBy = 'createdAt' } = query;
 
