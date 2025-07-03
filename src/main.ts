@@ -14,7 +14,7 @@ async function bootstrap() {
   );
 
   app.enableCors({
-    origin: 'localhost:3000', // atau frontend URL-mu
+    origin: ['http://localhost:3000', 'https://www.sudutbarber.shop'],
   });
   //test workflow 6
   await app.listen(process.env.PORT ?? 3000);
