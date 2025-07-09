@@ -45,6 +45,7 @@ model Service {
   description String?
   duration    Int // duration in minutes
   price       Float
+  point       Int
   barber      BarberService[]
   bookings    Booking[]
 }

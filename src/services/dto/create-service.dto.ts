@@ -9,4 +9,6 @@ export class CreateServiceDto {
   duration: number;
   @IsOptional()
   description: string | null;
+  @IsOptional()
+  point: number;
 }

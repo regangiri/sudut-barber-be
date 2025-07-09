@@ -25,6 +25,7 @@ export class ServicesService {
           price: dto.price,
           duration: dto.duration,
           description: dto.description,
+          point: dto.point,
         },
       });
     } catch (error: unknown) {
