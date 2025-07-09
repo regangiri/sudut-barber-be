@@ -16,7 +16,8 @@ async function bootstrap() {
   app.enableCors({
     origin: ['http://localhost:3000', 'https://www.sudutbarber.shop'],
   });
-  //test workflow 6
+  //test workflow 8123123
+  //geeta
   await app.listen(process.env.PORT ?? 3000);
   console.log(`Application is running on: ${await app.getUrl()}`);
 }
