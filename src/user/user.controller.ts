@@ -43,6 +43,13 @@ export class UserController {
     return plainToInstance(UserEntity, users);
   }
 
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async getMyInfo(@Request() req): Promise<UserEntity> {
+    const user = await this.userService.getMyInfo(req.user.userId);
+    return plainToInstance(UserEntity, user);
+  }
+
   @Patch('update-user/:id')
   async updateUser(
     @Body() updateUserDto: UpdateUserDto,
