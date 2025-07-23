@@ -8,10 +8,12 @@ import { BarberModule } from './barber/barber.module';
 import { AuthModule } from './auth/auth.module';
 import { ServicesService } from './services/services.service';
 import { ServicesModule } from './services/services.module';
+import { PointService } from './point/point.service';
+import { PointModule } from './point/point.module';
 
 @Module({
-  imports: [BookingModule, PrismaModule, UserModule, BarberModule, AuthModule, ServicesModule],
+  imports: [BookingModule, PrismaModule, UserModule, BarberModule, AuthModule, ServicesModule, PointModule],
   controllers: [AppController],
-  providers: [AppService, ServicesService],
+  providers: [AppService, ServicesService, PointService],
 })
 export class AppModule {}

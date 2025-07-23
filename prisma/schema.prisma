@@ -2,6 +2,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 // datasource db {
 //   provider = "postgresql"
 //   url      = env("DATABASE_URL")
@@ -19,14 +20,15 @@ enum BookingStatus {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
+  id        String             @id @default(uuid())
+  email     String             @unique
   password  String
-  phone     String?  @unique
+  phone     String?            @unique
   name      String?
   booking   Booking[]
   review    Review[]
-  createdAt DateTime  @default(now())
+  points    PointTransaction[]
+  createdAt DateTime           @default(now())
 }
 
 model Barber {
@@ -45,7 +47,7 @@ model Service {
   description String?
   duration    Int // duration in minutes
   price       Float
-  point       Int? @default(0)
+  point       Int?            @default(0)
   barber      BarberService[]
   bookings    Booking[]
 }
@@ -61,24 +63,23 @@ model BarberService {
 }
 
 model Booking {
-  id         String @id @default(uuid())
-  userId     String
-  barberId   String
-  serviceId  String
-  startTime  DateTime  
+  id        String        @id @default(uuid())
+  userId    String
+  barberId  String
+  serviceId String
+  startTime DateTime
+  status    BookingStatus @default(PENDING)
 
-  status BookingStatus @default(PENDING)
-
-  user     User     @relation(fields: [userId], references: [id])
-  barber   Barber   @relation(fields: [barberId], references: [id])
-  service  Service  @relation(fields: [serviceId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+  barber  Barber  @relation(fields: [barberId], references: [id])
+  service Service @relation(fields: [serviceId], references: [id])
 
   review Review?
+  points PointTransaction[]
 
   createdAt DateTime @default(now())
 
-    @@unique([barberId, startTime]) // prevents double-booking a timeslot for the same barber
-
+  @@unique([barberId, startTime])
 }
 
 model Review {
@@ -94,4 +95,26 @@ model Review {
   booking Booking @relation(fields: [bookingId], references: [id])
 
   createdAt DateTime @default(now())
+}
+
+model PointTransaction {
+  id        String    @id @default(uuid())
+  userId    String
+  bookingId String?
+  points    Int
+  type      PointType
+  reason    String?
+  createdAt DateTime  @default(now())
+
+  user    User     @relation(fields: [userId], references: [id])
+  booking Booking? @relation(fields: [bookingId], references: [id])
+
+  @@index([userId])
+  @@index([bookingId])
+}
+
+enum PointType {
+  EARNED
+  REDEEMED
+  ADJUSTMENT
 }

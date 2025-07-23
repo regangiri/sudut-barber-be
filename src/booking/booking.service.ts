@@ -7,10 +7,14 @@ import { Booking, Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { BookingEntity } from './entities/booking.entity';
+import { PointService } from 'src/point/point.service';
 
 @Injectable()
 export class BookingService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private pointService: PointService,
+  ) {}
 
   async bookings(params: Prisma.BookingFindManyArgs): Promise<Booking[]> {
     return this.prisma.booking.findMany({
@@ -134,6 +138,28 @@ export class BookingService {
       }
       throw error;
     }
+  }
+
+  async completeBooking(bookingId: string) {
+    const booking = await this.prisma.booking.update({
+      where: { id: bookingId },
+      data: { status: 'COMPLETED' },
+      include: {
+        user: true,
+        service: true, // includes point
+      },
+    });
+
+    const points = booking.service.point ?? 0;
+
+    await this.pointService.addPointsFromService(
+      booking.userId,
+      booking.id,
+      points,
+      booking.service.name,
+    );
+
+    return booking;
   }
 
   async deleteBooking(id: string) {

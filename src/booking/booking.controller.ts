@@ -52,6 +52,15 @@ export class BookingController {
       where: { id: dto.barberId },
       include: { services: true },
     });
+
+    const user = await this.prisma.user.findUnique({
+      where: { id: dto.userId },
+    });
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
     const serviceOffered = barber?.services.some(
       (service) => service.serviceId === dto.serviceId,
     );
@@ -71,6 +80,11 @@ export class BookingController {
     @Body() data: Partial<CreateBookingDto>,
   ): Promise<Booking> {
     return this.bookingService.updateBooking({ id: id, data });
+  }
+
+  @Patch('/complete-booking/:id')
+  async completeBooking(@Param('id') id: string) {
+    return this.bookingService.completeBooking(id);
   }
 
   @Delete('/delete-booking/:id')
