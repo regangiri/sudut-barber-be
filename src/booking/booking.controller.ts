@@ -15,6 +15,7 @@ import { Booking } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { plainToInstance } from 'class-transformer';
 import { BookingEntity } from './entities/booking.entity';
+import { UpdateBookingDto } from './dto/update-booking.dto';
 
 @Controller('booking')
 export class BookingController {
@@ -77,7 +78,7 @@ export class BookingController {
   @Patch('/update-booking/:id')
   async updateBooking(
     @Param('id') id: string,
-    @Body() data: Partial<CreateBookingDto>,
+    @Body() data: UpdateBookingDto,
   ): Promise<Booking> {
     return this.bookingService.updateBooking({ id: id, data });
   }

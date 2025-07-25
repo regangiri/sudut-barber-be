@@ -1,9 +1,8 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import { PointService } from './point.service';
 import { PointQueryDto } from './dto/point-query.dto';
 import { PointEntity } from './entities/point.entity';
 import { plainToInstance } from 'class-transformer';
-import { equals } from 'class-validator';
 
 @Controller('point')
 export class PointController {
@@ -36,28 +35,4 @@ export class PointController {
 
     return plainToInstance(PointEntity, users);
   }
-
-  //   @Post('add/:userId')
-  //   async addPointsToUser(
-  //     @Param('userId') userId: string,
-  //     @Body() dto: AddPointsDto,
-  //   ) {
-  //     const { bookingId, points, reason } = dto;
-
-  //     if (points <= 0) {
-  //       return { message: 'Points must be greater than zero.' };
-  //     }
-
-  //     const transaction = await this.pointService.addPointsFromService(
-  //       userId,
-  //       bookingId,
-  //       points,
-  //       reason || 'Points added',
-  //     );
-
-  //     return {
-  //       message: 'Points added successfully',
-  //       transaction,
-  //     };
-  //   }
 }

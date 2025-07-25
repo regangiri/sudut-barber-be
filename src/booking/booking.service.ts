@@ -8,6 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { BookingEntity } from './entities/booking.entity';
 import { PointService } from 'src/point/point.service';
+import { UpdateBookingDto } from './dto/update-booking.dto';
 
 @Injectable()
 export class BookingService {
@@ -121,7 +122,7 @@ export class BookingService {
 
   async updateBooking(params: {
     id: string;
-    data: Partial<CreateBookingDto>;
+    data: UpdateBookingDto;
   }): Promise<Booking> {
     try {
       const { id, data } = params;
